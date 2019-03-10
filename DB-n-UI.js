@@ -20,66 +20,59 @@ DUG.express = require('express');
 
 DUG.app = DUG.express();
 DUG.handlebars = require('express-handlebars').create({defaultLayout: 'main'});
-DUG.session = require('express-session');
+//DUG.session = require('express-session');
 DUG.bodyParser = require('body-parser');
 DUG.info = require("./info.js");
+DUG.app.use(DUG.express.static('public'));
 
 DUG.app.use(DUG.bodyParser.urlencoded({extended: false}));
-DUG.app.use(DUG.session({
-    secret: 'SuperDuperSecretPassword',
-    resave: false,
-    saveUninitialized: true
-}));
+// DUG.app.use(DUG.session({
+//     secret: 'SuperDuperSecretPassword',
+//     resave: false,
+//     saveUninitialized: true
+// }));
 
 DUG.app.engine('handlebars', DUG.handlebars.engine);
 DUG.app.set('view engine', 'handlebars');
 DUG.app.set('port', DUG.info.port);
 
-DUG.app.get('/', function (req, res, next) {
-    var context = {};
-    //If there is no session, go to the main page.
-    if (!req.session.name) {
-        res.render('newSession', context);
-        return;
-    }
-    context.name = req.session.name;
-    context.toDoCount = req.session.toDo.length || 0;
-    context.toDo = req.session.toDo || [];
-    console.log(context.toDo);
-    res.render('workouts', context);
+DUG.app.get('/', function (req, res) {
+    res.render('workouts');
 });
 
 DUG.app.post('/', function (req, res) {
-    var context = {};
+    var response = {};
 
     if (req.body['New List']) {
-        req.session.name = req.body.name;
-        req.session.toDo = [];
-        req.session.curId = 0;
+        // req.session.name = req.body.name;
+        // req.session.toDo = [];
+        // req.session.curId = 0;
     }
 
     //If there is no session, go to the main page.
-    if (!req.session.name) {
-        res.render('newSession', context);
-        return;
-    }
+    // if (!req.session.name) {
+    //     res.render('newSession', context);
+    //     return;
+    // }
 
     if (req.body['Add Item']) {
-        req.session.toDo.push({"name":req.body.name, "id":req.session.curId});
-        req.session.curId += 1;
+        // req.session.toDo.push({"name":req.body.name, "id":req.session.curId});
+        // req.session.curId += 1;
     }
 
     if (req.body['Done']) {
-        req.session.toDo = req.session.toDo.filter(function (e) {
-            return e.id !== parseInt(req.body.id);
-        });
+        // req.session.toDo = req.session.toDo.filter(function (e) {
+        //     return e.id !== parseInt(req.body.id);
+        // });
     }
 
-    context.name = req.session.name;
-    context.toDoCount = req.session.toDo.length;
-    context.toDo = req.session.toDo;
-    console.log(context.toDo);
-    res.render('workouts', context);
+    // context.name = req.session.name;
+    // context.toDoCount = req.session.toDo.length;
+    // context.toDo = req.session.toDo;
+    // console.log(req);
+    // res.render('workouts', context);
+    // response = req;
+    // res.send(response);
 });
 
 DUG.app.use(function (req, res) {

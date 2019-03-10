@@ -1,0 +1,33 @@
+html {
+    background: #404040;
+}
+
+body {
+    width: 95%;
+    max-width: 800px;
+    min-height: 800px;
+    padding: 14px;
+    margin:7px auto;
+    background-color: rgb(242, 242, 242);
+    border: solid 3px;
+}
+
+h1 {
+    text-align: center;
+    margin: 7px 0px 14ps;
+}
+
+table {
+    border: 1px solid black;
+    border-spacing: 0px;
+    margin: auto;
+    margin-top: 7px;
+    margin-bottom: 14px;
+}
+
+th, td {
+    text-align: center;
+    border: 1px solid black;
+    padding: 7px;
+    margin: auto;
+}
