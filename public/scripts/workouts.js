@@ -8,7 +8,9 @@ const WOG = {
     editFunction: null,
     deleteFunction: null,
     workoutTable: document.getElementById("workoutTable"),
+    formRow: document.getElementById("formRow"),
     submitButton: document.getElementById("submitButton"),
+    workoutTBody: document.getElementById("workoutTBody"),
     createRow: null,
     bindSubmit: null
 };
@@ -23,17 +25,33 @@ WOG.createIndex = (function () {
 }());
 
 WOG.editFunction = function () {
-
+    var row, rowIndex, cells = [], inputs = [], i;
+    row = WOG.doc.getElementById("editA");
+    if (row) {
+        row.removeAttribute("id");
+    }
+    row = this.parentNode.parentNode;
+    rowIndex = row.rowIndex;
+    cells = row.getElementsByTagName("td");
+    inputs = WOG.formRow.getElementsByTagName("td");
+    for (i = 0; i < 5; i += 1) {
+        inputs[i].firstChild.value = cells[i].textContent;
+    }
+    cells[3].textContent === "lbs" ? (inputs[3].firstElementChild.checked = true) : (inputs[3].lastElementChild.checked = true);
+    inputs[5].firstChild.value = "edit row";
+    row.setAttribute("id", "editA");
+    WOG.formRow.setAttribute("id", "editB");
 };
 
 WOG.deleteFunction = function () {
-        var row = this.parentNode.parentNode.rowIndex;
-        WOG.workoutTable.deleteRow(row);
+    var row = this.parentNode.parentNode.rowIndex;
+    console.log(this.id);
+    WOG.workoutTable.deleteRow(row);
 };
 
 WOG.createRow = function (exName, reps, weight, units, date) {
     var row, i, cell = [], idNum = WOG.createIndex(), editButton, deleteButton;
-    row = WOG.workoutTable.insertRow(2);
+    row = WOG.workoutTBody.insertRow(0);
     for (i = 0; i < 6; i += 1) {
         cell[i] = row.insertCell(i);
     }

@@ -31,3 +31,16 @@ th, td {
     padding: 7px;
     margin: auto;
 }
+
+#submitButton {
+    width: 90px;
+}
+
+ thead tr:first-child, tbody tr:nth-child(odd) {
+    background-color: lightskyblue;
+}
+
+#editA, #editB {
+    background-color: deeppink;
+}
+

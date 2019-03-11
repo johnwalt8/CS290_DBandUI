@@ -1,23 +1,28 @@
 <h1>My Exercises</h1>
 <table id="workoutTable">
-    <tr>
-        <th>Exercise</th>
-        <th>Reps</th>
-        <th>Weight</th>
-        <th>Units</th>
-        <th>Date</th>
-        <th></th>
-    </tr>
-    <tr><form name="exercise" method="post">
-        <td><input type="text" name="exerciseName" placeholder="name required" required></td>
-        <td><input type="number" name="reps" min="0" max="999"></td>
-        <td><input type="number" name="weight" min="0" max="999"></td>
-        <td>
-            <input type="radio" name="units" value="lbs" checked> lbs
-            <input type="radio" name="units" value="kg"> kg
-        </td>
-        <td><input type="date" name="date"></td>
-        <td><input type="submit" value="add" id="submitButton"></td>
-    </form></tr>
+    <thead>
+        <tr>
+            <th>Exercise</th>
+            <th>Reps</th>
+            <th>Weight</th>
+            <th>Units</th>
+            <th>Date</th>
+            <th></th>
+        </tr>
+        <tr id="formRow"><form name="exercise" method="post">
+            <td><input type="text" name="exerciseName" placeholder="name required" required></td>
+            <td><input type="number" name="reps" min="0" max="999"></td>
+            <td><input type="number" name="weight" min="0" max="999"></td>
+            <td>
+                <input type="radio" name="units" value="lbs" checked> lbs
+                <input type="radio" name="units" value="kg"> kg
+            </td>
+            <td><input type="date" name="date"></td>
+            <td><input type="submit" value="add" id="submitButton"></td>
+        </form></tr>
+    </thead>
+    <tbody id="workoutTBody">
+
+    </tbody>
 </table>
 <script type="text/javascript" src="/scripts/workouts.js"></script>
