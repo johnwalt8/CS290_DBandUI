@@ -40,7 +40,6 @@ th, td {
     background-color: lightskyblue;
 }
 
-#editA, #editB {
-    background-color: deeppink;
+#editForm, #editRow {
+    background-color: yellow;
 }
-
