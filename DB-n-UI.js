@@ -20,17 +20,11 @@ DUG.express = require('express');
 
 DUG.app = DUG.express();
 DUG.handlebars = require('express-handlebars').create({defaultLayout: 'main'});
-//DUG.session = require('express-session');
 DUG.bodyParser = require('body-parser');
 DUG.info = require("./info.js");
 DUG.app.use(DUG.express.static('public'));
 
 DUG.app.use(DUG.bodyParser.urlencoded({extended: false}));
-// DUG.app.use(DUG.session({
-//     secret: 'SuperDuperSecretPassword',
-//     resave: false,
-//     saveUninitialized: true
-// }));
 
 DUG.app.engine('handlebars', DUG.handlebars.engine);
 DUG.app.set('view engine', 'handlebars');
@@ -41,12 +35,11 @@ DUG.app.get('/', function (req, res) {
 });
 
 DUG.app.post('/', function (req, res) {
-    var response = {};
+    var context = {}, response = {};
+    console.log('post');
 
-    if (req.body['New List']) {
-        // req.session.name = req.body.name;
-        // req.session.toDo = [];
-        // req.session.curId = 0;
+    if (req.body['addEdit']) {
+        console.log('addEdit');
     }
 
     //If there is no session, go to the main page.
@@ -55,23 +48,18 @@ DUG.app.post('/', function (req, res) {
     //     return;
     // }
 
-    if (req.body['Add Item']) {
-        // req.session.toDo.push({"name":req.body.name, "id":req.session.curId});
-        // req.session.curId += 1;
+    if (req.body['editRow']) {
+        console.log('editRow');
     }
 
-    if (req.body['Done']) {
-        // req.session.toDo = req.session.toDo.filter(function (e) {
-        //     return e.id !== parseInt(req.body.id);
-        // });
+    if (req.body['deleteRow']) {
+        console.log('deleteRow');
     }
 
-    // context.name = req.session.name;
-    // context.toDoCount = req.session.toDo.length;
-    // context.toDo = req.session.toDo;
-    // console.log(req);
+    console.log(req.body);
+
     // res.render('workouts', context);
-    // response = req;
+    response = "success";
     // res.send(response);
 });
 

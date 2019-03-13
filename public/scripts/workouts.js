@@ -12,9 +12,9 @@ const WOG = {
     submitButton: document.getElementById("submitButton"),
     workoutTBody: document.getElementById("workoutTBody"),
     createRow: null,
-    fillRow: null, 
+    fillRow: null,
     emptyForm: null,
-    bindSubmit: null, 
+    bindSubmit: null
 };
 
 WOG.createIndex = (function () {
@@ -50,7 +50,11 @@ WOG.editFunction = function () {
     for (i = 0; i < 5; i += 1) {
         inputs[i].firstChild.value = cells[i].textContent;
     }
-    cells[3].textContent === "lbs" ? (inputs[3].firstElementChild.checked = true) : (inputs[3].lastElementChild.checked = true);
+    if (cells[3].textContent === "lbs") {
+        inputs[3].firstElementChild.checked = true;
+    } else {
+        inputs[3].lastElementChild.checked = true;
+    }
     inputs[5].firstChild.value = "edit row";
     row.setAttribute("id", "editRow");
     WOG.formRow.setAttribute("id", "editForm");
@@ -72,23 +76,25 @@ WOG.fillRow = function (row, exName, reps, weight, units, date) {
 };
 
 WOG.createRow = function (exName, reps, weight, units, date) {
-    var row, i, cell = [], idNum = WOG.createIndex(), editFormutton, deleteButton;
+    var row, i, cell = [], idNum = WOG.createIndex(), editFormButton, deleteButton;
     row = WOG.workoutTBody.insertRow(0);
     for (i = 0; i < 6; i += 1) {
         cell[i] = row.insertCell(i);
     }
     WOG.fillRow(row, exName, reps, weight, units, date);
-    cell[5].innerHTML = '<input type="submit" value="edit" id="edit' + idNum + '"><input type="submit" value="delete" id="delete' + idNum + '">';
-    editFormutton = WOG.doc.getElementById("edit" + idNum);
-    editFormutton.addEventListener("click", WOG.editFunction);
+    cell[5].innerHTML = '<input type="submit" name="editRow" value="edit" id="edit'
+            + idNum + '"><input type="submit" name="deleteRow" value="delete" id="delete'
+            + idNum + '">';
+    editFormButton = WOG.doc.getElementById("edit" + idNum);
+    editFormButton.addEventListener("click", WOG.editFunction);
     deleteButton = WOG.doc.getElementById("delete" + idNum);
     deleteButton.addEventListener("click", WOG.deleteFunction);
 };
 
 WOG.bindSubmit = function () {
     WOG.submitButton.addEventListener("click", function (event) {
-        var submitCurrentValue = WOG.submitButton.value; 
-        event.preventDefault();
+        var submitCurrentValue = WOG.submitButton.value;
+        // event.preventDefault();
         if (submitCurrentValue === "add") {
             WOG.createRow(
                 WOG.doc.exercise.exerciseName.value,
