@@ -1,5 +1,4 @@
 <h1>My Exercises</h1>
-<form name="exercise" method="post">
 <table id="workoutTable">
     <thead>
         <tr>
@@ -19,12 +18,29 @@
                     <input type="radio" name="units" value="kg"> kg
                 </td>
                 <td><input type="date" name="date"></td>
-                <td><input type="submit" name="addEdit" value="add" id="submitButton"></td>
+                <td><input type="button" name="addEdit" value="add" id="addEditButton"></td>
             </tr>
     </thead>
     <tbody id="workoutTBody">
-
+        {{#if error}}
+            <h3>{{error}}</h3>
+        {{else}}
+            {{#if exercises}}
+                {{#each exercises}}
+                    <tr data-id="{{this.id}}">
+                        <td>{{this.name}}</td>
+                        <td>{{#if this.reps}}{{this.reps}}{{/if}}</td>
+                        <td>{{#if this.weight}}{{this.weight}}{{/if}}</td>
+                        <td>{{#if this.units}}{{this.units}}{{/if}}</td>
+                        <td>{{#if this.date}}{{this.date}}{{/if}}</td>
+                        <td>
+                            <input type="button" name="editRow" value="edit">
+                            <input type="button" name="deleteRow" value="delete">
+                        </td>
+                    </tr>
+                {{/each}}
+            {{/if}}
+        {{/if}}
     </tbody>
 </table>
-</form>
 <script type="text/javascript" src="/scripts/workouts.js"></script>
