@@ -12,10 +12,9 @@ const DUG = {
     handlebars: null,
     session: null,
     bodyParser: null,
-    info: null,
+    info: null,         // module for implementation specific values
     mysql: null,
     pool: null,
-    exercises: []
 };
 
 DUG.express = require('express');
@@ -42,13 +41,16 @@ DUG.pool = DUG.mysql.createPool({
     database: DUG.info.database
 });
 
+// original rendering of page
 DUG.app.get('/', function (req, res) {
     res.render('workouts');
 });
 
+// all AJAX functionality
 DUG.app.post('/', function (req, res) {
     var response = {};
 
+    // called to get exercises from database at first render
     if (req.body.action === "fill table") {
         let queryString;
         queryString = "SELECT * FROM workouts ORDER BY id";
@@ -72,6 +74,7 @@ DUG.app.post('/', function (req, res) {
         });
     }
 
+    // adds exercises to table
     if (req.body.action === "add") {
         let queryString, id, exer = {}, lbs;
         queryString = "INSERT INTO workouts (name, reps, weight, date, lbs) VALUES (?, ?, ?, ?, ?)";
@@ -100,6 +103,7 @@ DUG.app.post('/', function (req, res) {
         });
     }
 
+    // used to edit existing rows
     if (req.body.action === "edit row") {
         let queryString, exer = {}, lbs;
         queryString = "UPDATE workouts SET name = ?, reps = ?, weight = ?, date = ?, lbs = ? WHERE id = ?";
@@ -126,6 +130,7 @@ DUG.app.post('/', function (req, res) {
         });
     }
 
+    // used to delete existing rows
     if (req.body.action === "delete") {
         let queryString = "DELETE FROM workouts WHERE id = ?";
         DUG.pool.query(queryString, [req.body.id], function (err, result) {
@@ -150,6 +155,7 @@ DUG.app.post('/', function (req, res) {
     }
 });
 
+// can be used to empty table
 DUG.app.get('/reset-table', function (req, res, next) {
     DUG.pool.query("DROP TABLE IF EXISTS workouts", function (err) {
         var queryString = "CREATE TABLE workouts(" +

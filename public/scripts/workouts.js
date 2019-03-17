@@ -4,20 +4,19 @@
 
 const WOG = {
     doc: document,
-    createIndex: null,
-    editFunction: null,
-    deleteFunction: null,
+    createIndex: null,          // closure to give a new index to add/edit buttons on each row
+    editFunction: null,         // fills the form row with data from row to be edited
+    deleteFunction: null,       // yes, deletes
     workoutTable: document.getElementById("workoutTable"),
     formRow: document.getElementById("formRow"),
     addEditButton: document.getElementById("addEditButton"),
     workoutTBody: document.getElementById("workoutTBody"),
-    createRow: null,
-    fillRow: null,
-    emptyForm: null,
-    bindAddEdit: null,
+    createRow: null,            // used to make each data row at initial render and each add
+    fillRow: null,              // used by createRow and to edit row
+    emptyForm: null,            // funntion to empty the form row after each add and edit
+    bindAddEdit: null,          // sets initial eventlistener on main add/edit button
     xhr: new XMLHttpRequest(),
-    request: {},
-    response: {}
+    response: {}                // global reponse object for easier debugging
 };
 
 WOG.createIndex = (function () {
@@ -55,12 +54,12 @@ WOG.editFunction = function () {
     inputs.exerciseName.value = cells[0].textContent;
     inputs.reps.value = cells[1].textContent;
     inputs.weight.value = cells[2].textContent;
-    if (cells[3].textContent === "lbs") {
+    if (cells[3].textContent === "lbs") {  // selects correct radio button
         inputs.units.checked = true;
     } else {
         inputs.units.nextElementSibling.checked = true;
     }
-    if (cells[4].textContent) {
+    if (cells[4].textContent) { // changes date string from data row to format for input date
         date = cells[4].textContent.split("/");
         inputs.date.value = date[2] + "-" + (parseInt(date[0]) < 10 ? "0" : "") + date[0] + "-" + (parseInt(date[1]) < 10 ? "0" : "") + date[1];    
     } else {
@@ -75,11 +74,11 @@ WOG.editFunction = function () {
 WOG.deleteFunction = function () {
     var deleteButton, row, xhr, inputs, editRow, request = {};
     deleteButton = this;
-    deleteButton.disabled = true;
+    deleteButton.disabled = true;  // disable button so it can't be clicked twice
     row = deleteButton.parentNode.parentNode;
     xhr = new XMLHttpRequest();
     request.action = "delete";
-    request.id = parseInt(row.getAttribute("data-id"));
+    request.id = parseInt(row.getAttribute("data-id"));  // id of database row
     inputs = WOG.formRow.getElementsByTagName("input");
     xhr.open("POST", "/", true);
     xhr.setRequestHeader("Content-Type", "application/json");
@@ -101,7 +100,7 @@ WOG.deleteFunction = function () {
             console.log("Error in network request: " + xhr.responseText);
             inputs.exerciseName.value = "NETWORK ERROR";
         }
-        deleteButton.disabled = false;
+        deleteButton.disabled = false;  // re-enables button after work is complete
     });
     xhr.send(JSON.stringify(request));
 };
@@ -111,7 +110,7 @@ WOG.fillRow = function (row, exName, reps, weight, units, date) {
     cells[0].innerHTML = exName;
     cells[1].innerHTML = reps;
     cells[2].innerHTML = weight;
-    cells[3].innerHTML = units ? "lbs" : "kg";
+    cells[3].innerHTML = units ? "lbs" : "kg"; 
     cells[4].innerHTML = date;
 };
 
@@ -196,6 +195,7 @@ WOG.bindAddEdit = function () {
 
 WOG.doc.addEventListener("DOMContentLoaded", WOG.bindAddEdit);
 
+// gets data to create all the data rows
 WOG.doc.addEventListener("DOMContentLoaded", function () {
     var xhr, inputs, request = {};
     inputs = WOG.formRow.getElementsByTagName("input");
