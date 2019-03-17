@@ -41,11 +41,12 @@ WOG.emptyForm = function () {
 };
 
 WOG.editFunction = function () {
-    var row, rowId, cells = [], inputs = [];
+    var row, rowId, cells = [], inputs = [], date;
     this.disabled = true;
     row = WOG.doc.getElementById("editRow");
     if (row) {
         row.removeAttribute("id");
+        row.lastElementChild.firstElementChild.disabled = false;
     }
     row = this.parentNode.parentNode;
     rowId = row.getAttribute("data-id");
@@ -59,7 +60,12 @@ WOG.editFunction = function () {
     } else {
         inputs.units.nextElementSibling.checked = true;
     }
-    inputs.date.value = cells[4].textContent;
+    if (cells[4].textContent) {
+        date = cells[4].textContent.split("/");
+        inputs.date.value = date[2] + "-" + (parseInt(date[0]) < 10 ? "0" : "") + date[0] + "-" + (parseInt(date[1]) < 10 ? "0" : "") + date[1];    
+    } else {
+        inputs.date.value = "";
+    }
     inputs.addEdit.value = "edit row";
     row.setAttribute("id", "editRow");
     WOG.formRow.setAttribute("id", "editForm");
@@ -101,7 +107,7 @@ WOG.deleteFunction = function () {
 };
 
 WOG.fillRow = function (row, exName, reps, weight, units, date) {
-    var cells = row.getElementsByTagName("td");
+    var d, cells = row.getElementsByTagName("td");
     cells[0].innerHTML = exName;
     cells[1].innerHTML = reps;
     cells[2].innerHTML = weight;
@@ -140,15 +146,20 @@ WOG.bindAddEdit = function () {
             request.action = addEditButtonValue;
             request.exercise.id = parseInt(WOG.formRow.getAttribute("data-id"));
             request.exercise.exerciseName = inputs.exerciseName.value;
-            request.exercise.reps = inputs.reps.value;
-            request.exercise.weight = inputs.weight.value;
+            request.exercise.reps = inputs.reps.value === '' ? null : inputs.reps.value;
+            request.exercise.weight = inputs.weight.value === '' ? null : inputs.weight.value;
             request.exercise.units = inputs.units.checked ? "lbs" : "kg";
-            request.exercise.date = inputs.date.value;
+            request.exercise.date = inputs.date.value === '' ? null : inputs.date.value;
             xhr.open("POST", "/", true);
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.addEventListener("load", function () {
                 if (xhr.status >= 200 && xhr.status < 400) {
                     WOG.response = JSON.parse(xhr.response);
+                    let dateString = null;
+                    if (inputs.date.value) {
+                        let date = new Date(inputs.date.value);
+                        dateString = date.toLocaleDateString();
+                    }
                     if (addEditButtonValue === "add") {
                         WOG.createRow(
                             WOG.response.id,
@@ -156,7 +167,7 @@ WOG.bindAddEdit = function () {
                             inputs.reps.value,
                             inputs.weight.value,
                             inputs.units.checked,
-                            inputs.date.value
+                            dateString
                         );
                     } else if (addEditButtonValue === "edit row") {
                         var editRow = WOG.doc.getElementById("editRow");
@@ -166,7 +177,7 @@ WOG.bindAddEdit = function () {
                             inputs.reps.value,
                             inputs.weight.value,
                             inputs.units.checked,
-                            inputs.date.value
+                            dateString
                         );
                         editRow.removeAttribute("id");
                         editRow.lastElementChild.firstElementChild.disabled = false;
@@ -184,3 +195,41 @@ WOG.bindAddEdit = function () {
 };
 
 WOG.doc.addEventListener("DOMContentLoaded", WOG.bindAddEdit);
+
+WOG.doc.addEventListener("DOMContentLoaded", function () {
+    var xhr, inputs, request = {};
+    inputs = WOG.formRow.getElementsByTagName("input");
+    xhr = new XMLHttpRequest();
+    request.action = "fill table";
+    xhr.open("POST", "/", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.addEventListener("load", function () {
+        if (xhr.status >= 200 && xhr.status < 400) {
+            WOG.response = JSON.parse(xhr.response);
+            if (WOG.response.success === true) {
+                let length = WOG.response.result.length;
+                for (let i = 0; i < length; i += 1) {
+                    let dateString = null;
+                    if (WOG.response.result[i].date) {
+                        let date = new Date(WOG.response.result[i].date);
+                        dateString = date.toLocaleDateString();
+                    }
+                    WOG.createRow(
+                        WOG.response.result[i].id,
+                        WOG.response.result[i].name,
+                        WOG.response.result[i].reps,
+                        WOG.response.result[i].weight,
+                        WOG.response.result[i].lbs,
+                        dateString
+                    );
+                }
+            } else {
+                inputs.exerciseName.value = "ERROR: no data";
+            }
+        } else {
+            console.log("Error in network request: " + xhr.responseText);
+            inputs.exerciseName.value = "NETWORK ERROR";
+        }
+    });
+    xhr.send(JSON.stringify(request));
+});

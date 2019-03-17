@@ -22,25 +22,7 @@
             </tr>
     </thead>
     <tbody id="workoutTBody">
-        {{#if error}}
-            <h3>{{error}}</h3>
-        {{else}}
-            {{#if exercises}}
-                {{#each exercises}}
-                    <tr data-id="{{this.id}}">
-                        <td>{{this.name}}</td>
-                        <td>{{#if this.reps}}{{this.reps}}{{/if}}</td>
-                        <td>{{#if this.weight}}{{this.weight}}{{/if}}</td>
-                        <td>{{#if this.units}}{{this.units}}{{/if}}</td>
-                        <td>{{#if this.date}}{{this.date}}{{/if}}</td>
-                        <td>
-                            <input type="button" name="editRow" value="edit">
-                            <input type="button" name="deleteRow" value="delete">
-                        </td>
-                    </tr>
-                {{/each}}
-            {{/if}}
-        {{/if}}
+        <!--body of table created client side-->
     </tbody>
 </table>
 <script type="text/javascript" src="/scripts/workouts.js"></script>
