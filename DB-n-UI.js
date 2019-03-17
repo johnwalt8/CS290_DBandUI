@@ -111,7 +111,7 @@ DUG.app.post('/', function (req, res) {
                 response.error = "Error: Could not connect to database.  Please try again later.";
                 res.status(500);
                 throw err;
-            } else if (result.changedRows !== 0) {
+            } else if (result.affectedRows !== 0) {
                 response.id = exer.id;
                 response.success = true;
                 res.status(200);
